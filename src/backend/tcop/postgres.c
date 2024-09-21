@@ -1067,7 +1067,7 @@ exec_simple_query(const char *query_string)
 		 * do any special start-of-SQL-command processing needed by the
 		 * destination.
 		 */
-		commandTag = CreateCommandTag(parsetree->stmt);
+		commandTag = CMDTAG_SELECT;//CreateCommandTag(parsetree->stmt);
 
 		set_ps_display(GetCommandTagName(commandTag));
 
