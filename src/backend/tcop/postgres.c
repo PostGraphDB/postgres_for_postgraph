@@ -86,6 +86,10 @@
  *		global variables
  * ----------------
  */
+/* Hook for plugins to get control of parsing and analysis */
+parse_analyze_hook_type parse_analyze_hook = NULL;
+parse_hook_type parse_hook = NULL;
+
 const char *debug_query_string; /* client-supplied query string */
 
 /* Note: whereToSendOutput is initialized for the bootstrap/standalone case */
@@ -1009,8 +1013,11 @@ exec_simple_query(const char *query_string)
 	 * Do basic parsing of the query or queries (this should be safe even if
 	 * we are in aborted transaction state!)
 	 */
-	parsetree_list = pg_parse_query(query_string);
-
+	if (parse_hook) {
+        parsetree_list = parse_hook(query_string);
+	} else {
+	    parsetree_list = pg_parse_query(query_string);
+    }
 	/* Log immediately if dictated by log_statement */
 	if (check_log_statement(parsetree_list))
 	{
@@ -1130,9 +1137,13 @@ exec_simple_query(const char *query_string)
 		else
 			oldcontext = MemoryContextSwitchTo(MessageContext);
 
-		querytree_list = pg_analyze_and_rewrite(parsetree, query_string,
+        if (parse_analyze_hook) {
+			querytree_list = parse_analyze_hook(parsetree, query_string,
 												NULL, 0, NULL);
-
+		} else {
+		    querytree_list = pg_analyze_and_rewrite(parsetree, query_string,
+			   									    NULL, 0, NULL);
+		}
 		plantree_list = pg_plan_queries(querytree_list, query_string,
 										CURSOR_OPT_PARALLEL_OK, NULL);
 

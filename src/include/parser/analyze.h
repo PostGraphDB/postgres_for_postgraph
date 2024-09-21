@@ -21,8 +21,18 @@
 typedef void (*post_parse_analyze_hook_type) (ParseState *pstate,
 											  Query *query,
 											  JumbleState *jstate);
+
 extern PGDLLIMPORT post_parse_analyze_hook_type post_parse_analyze_hook;
 
+typedef List * (*parse_analyze_hook_type) (RawStmt *parsetree, const char *query_string,
+					                     Oid *paramTypes, int numParams,
+					                     QueryEnvironment *queryEnv);
+
+extern PGDLLIMPORT parse_analyze_hook_type parse_analyze_hook;
+
+typedef List * (*parse_hook_type) (char *string);
+
+extern PGDLLIMPORT parse_hook_type parse_hook;
 
 extern Query *parse_analyze(RawStmt *parseTree, const char *sourceText,
 							Oid *paramTypes, int numParams, QueryEnvironment *queryEnv);
