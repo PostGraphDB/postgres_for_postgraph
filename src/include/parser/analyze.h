@@ -34,6 +34,11 @@ typedef List * (*parse_hook_type) (char *string);
 
 extern PGDLLIMPORT parse_hook_type parse_hook;
 
+#include "tcop/cmdtag.h"
+typedef CommandTag (*create_command_tag_hook_type) (Node *parsetree);
+
+extern PGDLLIMPORT create_command_tag_hook_type create_command_tag_hook;
+
 extern Query *parse_analyze(RawStmt *parseTree, const char *sourceText,
 							Oid *paramTypes, int numParams, QueryEnvironment *queryEnv);
 extern Query *parse_analyze_varparams(RawStmt *parseTree, const char *sourceText,

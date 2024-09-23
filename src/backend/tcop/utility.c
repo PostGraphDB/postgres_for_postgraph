@@ -3197,8 +3197,6 @@ CreateCommandTag(Node *parsetree)
 			break;
 
 		default:
-			elog(WARNING, "unrecognized node type: %d",
-				 (int) nodeTag(parsetree));
 			tag = CMDTAG_UNKNOWN;
 			break;
 	}

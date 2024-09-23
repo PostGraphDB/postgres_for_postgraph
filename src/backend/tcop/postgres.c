@@ -89,6 +89,7 @@
 /* Hook for plugins to get control of parsing and analysis */
 parse_analyze_hook_type parse_analyze_hook = NULL;
 parse_hook_type parse_hook = NULL;
+create_command_tag_hook_type create_command_tag_hook = NULL;
 
 const char *debug_query_string; /* client-supplied query string */
 
@@ -1067,7 +1068,11 @@ exec_simple_query(const char *query_string)
 		 * do any special start-of-SQL-command processing needed by the
 		 * destination.
 		 */
-		commandTag = CMDTAG_SELECT;//CreateCommandTag(parsetree->stmt);
+		if (create_command_tag_hook) {
+            commandTag = create_command_tag_hook(parsetree->stmt);
+		} else {
+		    commandTag = CreateCommandTag(parsetree->stmt);
+		}
 
 		set_ps_display(GetCommandTagName(commandTag));
 
@@ -1108,7 +1113,7 @@ exec_simple_query(const char *query_string)
 		/*
 		 * Set up a snapshot if parse analysis/planning will need one.
 		 */
-		if (analyze_requires_snapshot(parsetree))
+		if (analyze_requires_snapshot(parsetree) || commandTag == CMDTAG_SELECT)
 		{
 			PushActiveSnapshot(GetTransactionSnapshot());
 			snapshot_set = true;
