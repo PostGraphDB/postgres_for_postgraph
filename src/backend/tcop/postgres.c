@@ -1113,7 +1113,7 @@ exec_simple_query(const char *query_string)
 		/*
 		 * Set up a snapshot if parse analysis/planning will need one.
 		 */
-		if (analyze_requires_snapshot(parsetree) || commandTag == CMDTAG_SELECT)
+		if (analyze_requires_snapshot(parsetree) || commandTag == CMDTAG_SELECT || commandTag == CMDTAG_INSERT)
 		{
 			PushActiveSnapshot(GetTransactionSnapshot());
 			snapshot_set = true;
