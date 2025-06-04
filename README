@@ -1,3 +1,5 @@
+./configure --enable-debug --enable-cassert --prefix=$(pwd)  CFLAGS="-g -std=c11 -Wno-incompatible-pointer-types -Wno-implicit-function-declaration -Wno-int-conversion"
+
 PostgreSQL Database Management System
 =====================================
 
