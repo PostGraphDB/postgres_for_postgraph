@@ -16,6 +16,12 @@
 
 #include "access/parallel.h"
 #include "nodes/execnodes.h"
+#include "access/skey.h"
+
+typedef void (*exec_seq_scan_scan_key_hook_type) (SeqScanState *node,
+					   					int *numScanKeys, ScanKey scanKeys);
+
+extern PGDLLIMPORT exec_seq_scan_scan_key_hook_type exec_seq_scan_scan_key_hook;
 
 extern SeqScanState *ExecInitSeqScan(SeqScan *node, EState *estate, int eflags);
 extern void ExecEndSeqScan(SeqScanState *node);

@@ -32,8 +32,11 @@
 #include "executor/execdebug.h"
 #include "executor/nodeSeqscan.h"
 #include "utils/rel.h"
+#include "access/skey.h"
 
 static TupleTableSlot *SeqNext(SeqScanState *node);
+exec_seq_scan_scan_key_hook_type exec_seq_scan_scan_key_hook = NULL;
+
 
 /* ----------------------------------------------------------------
  *						Scan Support
@@ -64,13 +67,18 @@ SeqNext(SeqScanState *node)
 
 	if (scandesc == NULL)
 	{
+		int *numScanKeys = 0;
+		ScanKey scanKeys = NULL;
+		if (exec_seq_scan_scan_key_hook)
+			(*exec_seq_scan_scan_key_hook) (node, numScanKeys, scanKeys);
+
 		/*
 		 * We reach here if the scan is not parallel, or if we're serially
 		 * executing a scan that was planned to be parallel.
 		 */
 		scandesc = table_beginscan(node->ss.ss_currentRelation,
 								   estate->es_snapshot,
-								   0, NULL);
+								   &numScanKeys, scanKeys);
 		node->ss.ss_currentScanDesc = scandesc;
 	}
 
