@@ -19,7 +19,7 @@
 #include "access/skey.h"
 
 typedef void (*exec_seq_scan_scan_key_hook_type) (SeqScanState *node,
-					   					int *numScanKeys, ScanKey scanKeys);
+					   					int *numScanKeys, ScanKey *scanKeys);
 
 extern PGDLLIMPORT exec_seq_scan_scan_key_hook_type exec_seq_scan_scan_key_hook;
 

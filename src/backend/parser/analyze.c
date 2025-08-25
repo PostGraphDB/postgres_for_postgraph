@@ -66,7 +66,7 @@ static List *transformInsertRow(ParseState *pstate, List *exprlist,
 static OnConflictExpr *transformOnConflictClause(ParseState *pstate,
 												 OnConflictClause *onConflictClause);
 static int	count_rowexpr_columns(ParseState *pstate, Node *expr);
-static Query *transformSelectStmt(ParseState *pstate, SelectStmt *stmt);
+
 static Query *transformValuesClause(ParseState *pstate, SelectStmt *stmt);
 static Query *transformSetOperationStmt(ParseState *pstate, SelectStmt *stmt);
 static Node *transformSetOperationTree(ParseState *pstate, SelectStmt *stmt,
@@ -1284,7 +1284,7 @@ count_rowexpr_columns(ParseState *pstate, Node *expr)
  * Note: this covers only cases with no set operations and no VALUES lists;
  * see below for the other cases.
  */
-static Query *
+Query *
 transformSelectStmt(ParseState *pstate, SelectStmt *stmt)
 {
 	Query	   *qry = makeNode(Query);

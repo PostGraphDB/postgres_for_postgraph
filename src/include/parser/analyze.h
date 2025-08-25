@@ -39,6 +39,8 @@ typedef CommandTag (*create_command_tag_hook_type) (Node *parsetree);
 
 extern PGDLLIMPORT create_command_tag_hook_type create_command_tag_hook;
 
+Query *transformSelectStmt(ParseState *pstate, SelectStmt *stmt);
+
 extern Query *parse_analyze(RawStmt *parseTree, const char *sourceText,
 							Oid *paramTypes, int numParams, QueryEnvironment *queryEnv);
 extern Query *parse_analyze_varparams(RawStmt *parseTree, const char *sourceText,

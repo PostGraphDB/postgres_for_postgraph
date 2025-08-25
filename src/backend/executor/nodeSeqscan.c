@@ -68,17 +68,22 @@ SeqNext(SeqScanState *node)
 	if (scandesc == NULL)
 	{
 		int numScanKeys = 0;
-		ScanKey scanKeys = NULL;
+		ScanKeyData *scanKeys = NULL;
 		if (exec_seq_scan_scan_key_hook)
-			(*exec_seq_scan_scan_key_hook) (node, &numScanKeys, scanKeys);
+			(*exec_seq_scan_scan_key_hook) (node, &numScanKeys, &scanKeys);
 
 		/*
 		 * We reach here if the scan is not parallel, or if we're serially
 		 * executing a scan that was planned to be parallel.
 		 */
-		scandesc = table_beginscan(node->ss.ss_currentRelation,
+		if (numScanKeys ==0)
+			scandesc = table_beginscan(node->ss.ss_currentRelation,
 								   estate->es_snapshot,
-								   numScanKeys, scanKeys);
+								   0, NULL);
+		else
+			scandesc = table_beginscan(node->ss.ss_currentRelation,
+									estate->es_snapshot,
+									numScanKeys, scanKeys);
 		node->ss.ss_currentScanDesc = scandesc;
 	}
 
